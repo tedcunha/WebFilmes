@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebFilmes.Data.Converters;
+using WebFilmes.Data.VO;
 using WebFilmes.Model;
 using WebFilmes.Repository;
 using WebFilmes.Repository.Generic;
@@ -11,28 +13,31 @@ namespace WebFilmes.Business.Implementations
     public class FilmesBusinessImpl : IFilmesBusiness
     {
         private readonly IRepository<Filmes> _repository;
+        private readonly FilmesConverter _converter;
 
         public FilmesBusinessImpl(IRepository<Filmes> repository)
         {
             _repository = repository;
+            _converter = new FilmesConverter();
         }
 
-        public List<Filmes> PesquisarFilmes()
+        public List<FilmesVO> PesquisarFilmes()
         {
-            return _repository.PesquisarFilmes(); 
+            return _converter.ParseList(_repository.PesquisarFilmes());
         }
 
-        public Filmes PesquisarFilmesPorID(long Id)
+        public FilmesVO PesquisarFilmesPorID(long Id)
         {
-            return _repository.PesquisarFilmesPorID(Id);
+            return _converter.Parse(_repository.PesquisarFilmesPorID(Id));
         }
 
-        public Menssagem CadastrarFilmes(Filmes filmes)
+        public Menssagem CadastrarFilmes(FilmesVO filmes)
         {
             try
             {
                 filmes.GuidID = Guid.NewGuid().ToString();
-                _repository.CadastrarFilmes(filmes);
+                var livroEntity = _converter.Parse(filmes);
+                livroEntity = _repository.CadastrarFilmes(livroEntity);
                 return new Menssagem
                 {
                     Status = "200",
@@ -49,18 +54,17 @@ namespace WebFilmes.Business.Implementations
             }
         }
 
-        public Menssagem AlteraFilme(Filmes filmes)
+        public Menssagem AlteraFilme(FilmesVO filmes)
         {
             try
             {
-                _repository.AlteraFilme(filmes);
-
+                var livroEntity = _converter.Parse(filmes);
+                livroEntity = _repository.AlteraFilme(livroEntity);
                 return new Menssagem
                 {
                     Status = "200",
                     Descricao = "Filme alterado com sucesso."
                 };
-
             }
             catch (Exception ex)
             {
@@ -77,7 +81,6 @@ namespace WebFilmes.Business.Implementations
             try
             {
                 _repository.DeletarFilme(Id);
-
                 return new Menssagem
                 {
                     Status = "200",

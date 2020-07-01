@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WebFilmes.Business;
+using WebFilmes.Data.VO;
 using WebFilmes.Model;
 
 namespace WebFilmes.Controllers
@@ -56,7 +57,7 @@ namespace WebFilmes.Controllers
 
 
         [HttpPost("CadastrarFilmes")]
-        public IActionResult CadastrarFilmes([FromBody] Filmes filmes)
+        public IActionResult CadastrarFilmes([FromBody] FilmesVO filmes)
         {
             try
             {
@@ -73,7 +74,7 @@ namespace WebFilmes.Controllers
         }
 
         [HttpPut("AlterarFilme")]
-        public IActionResult AlterarFilme([FromBody] Filmes filmes)
+        public IActionResult AlterarFilme([FromBody] FilmesVO filmes)
         {
             try
             {

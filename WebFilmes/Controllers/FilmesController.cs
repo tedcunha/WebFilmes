@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Tapioca.HATEOAS;
 using WebFilmes.Business;
 using WebFilmes.Data.VO;
 using WebFilmes.Model;
@@ -27,17 +28,19 @@ namespace WebFilmes.Controllers
         }
 
         [HttpGet("PesquisarFilmes")]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult PesquisarFilmes()
         {
             var retorno = _filmesBusiness.PesquisarFilmes();
             if (retorno == null)
             {
-                return NotFound();
+                 return NotFound();
             }
             return Ok(retorno);
         }
 
         [HttpGet("PesquisarFilmesPorID/{Id}")]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult PesquisarFilmesPorID(long Id)
         {
             try
@@ -57,6 +60,7 @@ namespace WebFilmes.Controllers
 
 
         [HttpPost("CadastrarFilmes")]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult CadastrarFilmes([FromBody] FilmesVO filmes)
         {
             try
@@ -74,6 +78,7 @@ namespace WebFilmes.Controllers
         }
 
         [HttpPut("AlterarFilme")]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult AlterarFilme([FromBody] FilmesVO filmes)
         {
             try
@@ -91,6 +96,7 @@ namespace WebFilmes.Controllers
         }
 
         [HttpDelete("DeletarFilme/{Id}")]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult DeletarFilme(long Id)
         {
             try

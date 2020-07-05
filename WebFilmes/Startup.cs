@@ -4,8 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Tapioca.HATEOAS;
 using WebFilmes.Business;
 using WebFilmes.Business.Implementations;
+using WebFilmes.HyperMidia;
 using WebFilmes.Model.Context;
 using WebFilmes.Repository.Generic;
 
@@ -29,13 +31,22 @@ namespace WebFilmes
 
             services.AddControllers();
 
+            #region "HATOAS"
+            //HATOAS
+            var filterOptions = new HyperMediaFilterOptions();
+            filterOptions.ObjectContentResponseEnricherList.Add(new FilmesEnricher());
+            services.AddSingleton(filterOptions);
+            #endregion
+
             services.AddApiVersioning();
 
+            #region "INJEÇÃO DE DEPENDENCIA"
             // Business
             services.AddScoped<IFilmesBusiness,FilmesBusinessImpl>();
 
             // Repository
             services.AddScoped(typeof(IRepository<>),typeof(GenericRepository<>));
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,9 +61,15 @@ namespace WebFilmes
 
             app.UseAuthorization();
 
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapControllers();
+            //});
+       
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapControllerRoute("DefaultApi", "{controller=Values}/{id?}");
             });
         }
     }

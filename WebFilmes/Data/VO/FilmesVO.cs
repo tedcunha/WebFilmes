@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using Tapioca.HATEOAS;
 
 namespace WebFilmes.Data.VO
 {
     [DataContract]
-    public class FilmesVO
+    public class FilmesVO : ISupportsHyperMedia
     {
         [DataMember(Order = 1)]
         public long? Id { get; set; }
@@ -35,5 +36,8 @@ namespace WebFilmes.Data.VO
 
         [DataMember(Order = 8)]
         public string Imagem { get; set; }
+
+        [DataMember(Order = 9)]
+        public List<HyperMediaLink> Links { get; set; } = new List<HyperMediaLink>();
     }
 }
